@@ -23,7 +23,7 @@ q_ini(Coef, Deg):-
 % adds 2 polynomials Poly1 and Poly2, returns Res
 add_poly(Poly1, [], Poly1).
 add_poly([], Poly2, Poly2).
-add_poly([(Coef1,Exp1)|Terms1], [(Coef2,Exp2)|Terms2], Result) :-
+add_poly([(Coef1,Exp1)|Terms1], [(Coef2,Exp2)|Terms2], Res) :-
     ( 
     Exp1 =:= Exp2 ->
         Coef is Coef1 + Coef2,
@@ -51,37 +51,33 @@ eval_poly([(Coef,Exp)|Terms], X, Res) :-
 
 %% to_string(Poly)
 % writes the polynomial Poly to the terminal
-to_string([[C, D]]):-
-    write(C),write("x^"),write(D).
-to_string([[C, D]|Y]):-
-    write(C),write("x^"),write(D), write(" + "), to_string(Y).
+to_string([(Coef, Exp)]):-
+    write(Coef),write("x^"),write(Exp).
+to_string([(Coef, Exp)|Terms]):-
+    write(Coef),write("x^"),write(Exp), write(" + "), to_string(Terms).
 
-%%% mult_poly(Poly1, Poly2, Res) 
+%% mult_poly(Poly1, Poly2, Res) 
 % multiplies 2 polynomials Poly1 and Poly2, returns Res
-mult_poly(Poly1, [], []).
-mult_poly([], Poly2, []).
-mult_poly([(Coef1,Exp1)|Terms1], Poly2, Res) :-
-    mult_poly_scalar((Coef1,Exp1), Poly2, PartialRes),
-    mult_poly(Terms1, Poly2, NextRes),
-    add_poly(PartialRes, NextRes, Res).
+% (que es rec?)
+mult_poly(_,[],[]): - !.
+mult_poly(Poly, [(Coef2, Exp)|Terms], Res):-
+   mult_poly(Poly, Terms, Rec),
+   mult_poly_scalar(Poly, Coef2, Exp, Scalar),
+   add_poly(Scalar, Rec, Res),
+   !.
 
-% mult_poly_scalar(Scalar, Poly, Res)
-% mult_poly_term(Term, Poly, Result)
-% multiplies a scalar Scalar and a polynomial Poly, returns Res
-mult_poly_scalar((Coef,Exp), Poly, Res) :-
-    maplist(mult_scalar(Coef,Exp), Poly, Res).  % maplist 
+% mult_poly_scalar(Poly1, Esc, Coe, Res)
+% multiplies a polynomial Poly1 with a scalar Scalar, returns Res
+% la neta no entiendo que esta pasando aqui, pero intente refactorearlo
+mult_poly_scalar([],_,_,[]):- !.
+mult_poly_scalar([(Coef1, Exp1)|Terms1], Scalar, Coef, [(Coef2, Exp2)|Terms2]):-
+   Coef2 is Coef1*Scalar,
+   Exp2 is Exp1+Coef,
+   mult_poly_scalar(Terms1, Scalar, Coef, Terms2).
 
-% mult_scalar(C, E, Scalar, Res)
-% multiplies a coefficient Coef and an exponent Exp with a scalar Scalar, returns Res
-mult_scalar(Coef, Exp, (Coef2,Exp2), (Coef3,Exp3)) :-
-    Coef3 is Coef * Coef2,
-    Exp3 is Exp + Exp2.
-
-
-% sub(Poly1, Poly2, Res)  ________todavia le falta mult_poly para funcionar___________
+%% subs(Poly1, Poly2, Res) 
 % substracts 2 polynomials Poly1 and Poly2, returns Res
-%subs_poly(Poly1, Poly2, Res):-
-%	mult_poly(Poly2, [[-1, 0]], Poly1),
-%	add_poly(Poly1, Poly2, Res).
-
+subs_poly(Poly1, Poly2, Res):-
+	mult_poly(Poly2, [(-1, 0)], Poly1),
+	add_poly(Poly1, Poly2, Res).
 

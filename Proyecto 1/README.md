@@ -4,10 +4,10 @@ Funcionalidad a recrear
 - [x] creacion de polynomio
 - [ ] return degree
 - [x] add
-- [~] substract
+- [ ] ~ substract
 - [x] multiply
 - [ ] compose
 - [x] evaluate
 - [ ] differentiate
 - [x] to string
-- [~] main con pruebas de que funciona
+- [ ] ~ main con pruebas de que funciona

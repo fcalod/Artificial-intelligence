@@ -46,9 +46,6 @@ add_Right(X, [(Coef, Exp)|Terms1], [(Coef, Exp)|Terms2]):-
 add_Left([(Coef, Exp)|Terms1], Y, [(Coef, Exp)|Terms2]):-
    add_poly(Terms1, Y, Terms2).
 
-
-
-
 %%% eval_poly(Poly, X, Res)
 % evaluates the value of the polynomial Poly at X, returns Res
 eval_poly([], _, 0).
@@ -86,25 +83,33 @@ mult_poly_scalar([(Coef1, Exp1)|Terms1], Scalar, Coef, [(Coef2, Exp2)|Terms2]):-
 %% subs(Poly1, Poly2, Res) 
 % substracts 2 polynomials Poly1 and Poly2, returns Res
 subs_poly(Poly1, Poly2, Res):-
-	mult_poly(Poly2, [(-1, 0)], Poly1),
+	mult_poly(Poly2, [(-1, 0)], Poly2), 
+	to_string(Poly1),
 	add_poly(Poly1, Poly2, Res).
-
 
 %% deriv(Poly, Res)
 % takes the derivative of the polynomial Poly, returns Res
-deriv([], Res):-
+deriv_poly([], Res):-
 	append([], Res).
-deriv([(Coef1, Exp1)|Terms1], [(Coef2, Exp2)|Terms2]):-
+deriv_poly([(Coef1, Exp1)|Terms1], [(Coef2, Exp2)|Terms2]):-
 	(	
 	Exp1 > 0 ->
 		Coef2 is Coef1*Exp1,
 		Exp2 is Exp1-1,
-		deriv(Terms1, Terms2);
+		deriv_poly(Terms1, Terms2);
 		(
 			append([(0, 0)], Terms2)
 		)
 	).
 
-%% comp(Poly1, Poly2, Res)
+%% comp_poly(Poly1, Poly2, Res)
 % takes the composition of the polynomials Poly1 with Poly2, returns Res
-%comp(Poly1, Poly2, Res):-
+compose_poly(Poly1, Poly2, Composed) :-
+	%polynomial1(Poly1),
+	%polynomial2(Poly2),
+    compose_poly_helper(Poly1, Poly2, Composed).
+
+compose_poly_helper(_, [], []).
+compose_poly_helper(Poly1, [(Coef, Exp) | Terms], [R | RT]) :-
+    eval_poly(Coef, Poly1, R),
+    compose_poly_helper(Poly1, Terms, RT).

@@ -15,6 +15,6 @@ Funcionalidad a recrear
 - [ ] ^ multiply
 - [ ] compose
 - [x] evaluate
-- [ ] differentiate
+- [ ] ^ differentiate
 - [x] to string
 - [ ] ~ main con pruebas de que funciona

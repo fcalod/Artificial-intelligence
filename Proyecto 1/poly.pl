@@ -42,7 +42,7 @@ add_poly([(Coef1,Exp1)|Terms1], [(Coef2,Exp2)|Terms2], Res) :-
     ).
 
 %%% eval_poly(Poly, X, Res)
-% evaluates the value of Poly at X, returns Res
+% evaluates the value of the polynomial Poly at X, returns Res
 eval_poly([], _, 0).
 eval_poly([(Coef,Exp)|Terms], X, Res) :-
     TermValue is Coef * X^Exp,
@@ -59,7 +59,7 @@ to_string([(Coef, Exp)|Terms]):-
 %% mult_poly(Poly1, Poly2, Res) 
 % multiplies 2 polynomials Poly1 and Poly2, returns Res
 % (que es rec?)
-mult_poly(_,[],[]): - !.
+mult_poly(_,[],[]):- !.
 mult_poly(Poly, [(Coef2, Exp)|Terms], Res):-
    mult_poly(Poly, Terms, Rec),
    mult_poly_scalar(Poly, Coef2, Exp, Scalar),
@@ -81,3 +81,22 @@ subs_poly(Poly1, Poly2, Res):-
 	mult_poly(Poly2, [(-1, 0)], Poly1),
 	add_poly(Poly1, Poly2, Res).
 
+
+%% deriv(Poly, Res)
+% takes the derivative of the polynomial Poly, returns Res
+deriv([], Res):-
+	append([], Res).
+deriv([(Coef1, Exp1)|Terms1], [(Coef2, Exp2)|Terms2]):-
+	(	
+	Exp1 > 0 ->
+		Coef2 is Coef1*Exp1,
+		Exp2 is Exp1-1,
+		deriv(Terms1, Terms2);
+		(
+			append([(0, 0)], Terms2)
+		)
+	).
+
+%% comp(Poly1, Poly2, Res)
+% takes the composition of the polynomials Poly1 with Poly2, returns Res
+%comp(Poly1, Poly2, Res):-

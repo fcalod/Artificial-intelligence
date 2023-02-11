@@ -1,3 +1,4 @@
+:- abolish(counter/1).
 % the constant polynomial 0
 zero([[0,0]]).
 
@@ -21,25 +22,32 @@ q_ini(Coef, Deg):-
 
 %%% add_poly(Poly1, Poly2, Res)
 % adds 2 polynomials Poly1 and Poly2, returns Res
-add_poly(Poly1, [], Poly1).
-add_poly([], Poly2, Poly2).
-add_poly([(Coef1,Exp1)|Terms1], [(Coef2,Exp2)|Terms2], Res) :-
-    ( 
-    Exp1 =:= Exp2 ->
-        Coef is Coef1 + Coef2,
-        add_poly(Terms1, Terms2, NextRes),
-        ( 
-	Coef =\= 0 ->
-            Res = [(Coef,Exp1)|NextRes];
-            Res = NextRes
-        );
-        Exp1 < Exp2 ->
-        add_poly(Terms1, [(Coef2,Exp2)|Terms2], NextRes),
-        Res = [(Coef1,Exp1)|NextRes];
-        Exp1 > Exp2 ->
-        add_poly([(Coef1,Exp1)|Terms1], Terms2, NextRes),
-        Res = [(Coef2,Exp2)|NextRes]
-    ).
+add_poly([], [], Res):-
+   append([], Res).
+add_poly([], [(Coef2, Exp2)|Terms], Res):-
+   add_Right([], [(Coef2, Exp2)|Terms], Res).
+add_poly([(Coef1, Exp1)|Terms], [], Res):-
+   add_Left([(Coef1, Exp1)|Terms], [], Res).
+add_poly([(Coef1, Exp1)|Terms1], [(Coef2, Exp2)|Terms2], Res):-
+   (  Exp1 > Exp2 ->
+      add_Left([(Coef1, Exp1)|Terms1], [(Coef2, Exp2)|Terms2], Res);
+      (  Exp1 < Exp2 ->
+         add_Right([(Coef1, Exp1)|Terms1], [(Coef2, Exp2)|Terms2], Res);
+         (  Exp1 =:= Exp2 ->
+            add_E([(Coef1, Exp1)|Terms1], [(Coef2, Exp2)|Terms2], Res)
+         )
+      )
+   ).
+
+add_E([(Coef1, Exp)|Terms1], [(Coef2, Exp)|Terms2], [(Coef, Exp)|Terms3]):-
+   Coef is Coef1+Coef2, add_poly(Terms1, Terms2, Terms3).
+add_Right(X, [(Coef, Exp)|Terms1], [(Coef, Exp)|Terms2]):-
+   add_poly(X, Terms1, Terms2).
+add_Left([(Coef, Exp)|Terms1], Y, [(Coef, Exp)|Terms2]):-
+   add_poly(Terms1, Y, Terms2).
+
+
+
 
 %%% eval_poly(Poly, X, Res)
 % evaluates the value of the polynomial Poly at X, returns Res
@@ -60,9 +68,9 @@ to_string([(Coef, Exp)|Terms]):-
 % multiplies 2 polynomials Poly1 and Poly2, returns Res
 % (que es rec?)
 mult_poly(_,[],[]):- !.
-mult_poly(Poly, [(Coef2, Exp)|Terms], Res):-
+mult_poly(Poly, [(Coef, Exp)|Terms], Res):-
    mult_poly(Poly, Terms, Rec),
-   mult_poly_scalar(Poly, Coef2, Exp, Scalar),
+   mult_poly_scalar(Poly, Coef, Exp, Scalar),
    add_poly(Scalar, Rec, Res),
    !.
 

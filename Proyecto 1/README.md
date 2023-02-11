@@ -12,7 +12,7 @@ Funcionalidad a recrear
 - [ ] return degree
 - [x] add 
 - [ ] ^ substract
-- [ ] ^ multiply
+- [x] multiply
 - [ ] compose
 - [x] evaluate
 - [ ] ^ differentiate

@@ -98,7 +98,9 @@ deriv_poly([(Coef1, Exp1)|Terms1], [(Coef2, Exp2)|Terms2]):-
 		Exp2 is Exp1-1,
 		deriv_poly(Terms1, Terms2);
 		(
-			append([(0, 0)], Terms2)
+			Coef2 is 0,
+			Exp2 is 0,
+			deriv_poly([], Terms2)
 		)
 	).
 

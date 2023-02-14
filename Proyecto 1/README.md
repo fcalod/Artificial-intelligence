@@ -1,20 +1,12 @@
-Proyecto que recrea un programa de manipulacion de polinomios de Java en Prologe
+Prolog implementation of a Java program for polynomial manipulation.
 
-Funcionalidad a recrear 
+Functionalities
 
-(criterio de finalizacion = testeo)
-
-~ = en marcha
-
-^ = falta testeo
-
-- [x] creacion de polynomio
-- [ ] return degree
-- [x] add 
-- [ ] ^ substract
-- [x] multiply
-- [ ] compose
-- [x] evaluate
-- [ ] ^ differentiate
-- [x] to string
-- [ ] ~ main con pruebas de que funciona
+- Polynomial instantiation
+- Addition
+- Substraction
+- Multiplication
+- Composition
+- Evaluation
+- Differentiation
+- Polynomial printing

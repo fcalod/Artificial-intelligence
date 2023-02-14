@@ -1,3 +1,15 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%% Polynomials %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%               Fabio G. Calo Dizy       191489                 %%%%
+%%%%               Erick Martínez Hernández 191821                 %%%%
+%%%%               Daniela Morones Navarro  182770                 %%%%
+%%%%               Javier Corral Lizarraga  188190                 %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Polynomials p=an*x^n + ... + a1*x + a0 are represented 
 % as [(an, n), ..., (a1, 1), (a, 0)]
 
@@ -120,7 +132,7 @@ deriv([(Coef1, Deg1)|Terms], [(Coef2, Deg2)|Res]):-
 %%%%%%%%%%%%%%%%%%% Evaluation (and composition) %%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Evaluates the value of the polynomial Poly at X using Horner's rule.
+% Evaluates the value of the polynomial Poly at X using Horners rule.
 % X must be a polynomial; for evluating constants, a constant polynomial
 % (e.g. [(3, 0)]) should be used
 % 
@@ -163,37 +175,36 @@ print(Poly):-
 	(Poly_length > 1 ->
 		% if there is more than one term, clean Poly before printing
 		clean(Poly, Clean_poly),
-		print_aux(Clean_poly)
+		print_aux(Clean_poly,1)
 	);
 	% if there is a single term, print it
-	print_aux(Poly).
+	print_aux(Poly,1).
 
 % Auxiliary method for print
 % 
 % print_aux(i)
-print_aux([]).
+print_aux([],0).
 % Prints any other term
-print_aux([(Coef, Deg)|Terms]):-
-	length(Terms, Num_Remaining), % number of remaining terms
-	%abs(Coef, Coef_abs), % 
+print_aux([(Coef, Deg)|Terms],Prim):-
+	(Prim =:= 0 -> % We check if it is the first element of the Polynomial
+		abs(Coef, Coef_abs), % If it is not the fist element of the Polynomial, we apply abs(Coef) and apply the sign below
+		(Coef < 0 ->
+		write(" - "); % If Coef < 0 it is negative and we print " - ", else it is
+		write(" + ")
+		);
+		Coef_abs is Coef, true % If it is the first element of the Polynomial then we leave the sign the same
+	),
 	(Deg =:= 0 ->
 		% if Deg is 0, print the coefficient
-		write(Coef);
+		write(Coef_abs);
 		(Deg =:= 1 ->
 			% if Deg is 1, print "x" without its exponent
-			write(Coef), write("x");
+			write(Coef_abs), write("x");
 			% else, print "x^[Deg]"
-			write(Coef), write("x^"), write(Deg)
-		),
-		(Num_Remaining > 0 ->
-			% prints a "+" if there are more terms remaining
-			write(" + ");
-			% forces the program to run the recursive call, whether
-			% or not the "+" was added
-			true 
+			write(Coef_abs), write("x^"), write(Deg)
 		)
 	),
-	print_aux(Terms).
+	print_aux(Terms,0). % Recursive call whithout the first term of the Polynomial
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
